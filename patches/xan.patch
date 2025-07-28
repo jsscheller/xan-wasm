@@ -1,0 +1,74 @@
+diff --git a/Cargo.toml b/Cargo.toml
+index a577e7e..b460fe1 100644
+--- a/Cargo.toml
++++ b/Cargo.toml
+@@ -55,7 +55,6 @@ colored = "2.0.0"
+ colorgrad = { version = "0.7.0", default-features = false, features = ["preset"] }
+ console = "0.15.8"
+ csv = "1.3.1"
+-ctrlc = "3.4.4"
+ comrak = { version = "0.39.0", default-features = false }
+ deepsize = "0.2.0"
+ dlv-list = "0.6.0"
+@@ -114,5 +113,8 @@ url = "2.5.4"
+ uuid = { version = "1.16.0", features = ["v4"] }
+ 
+ # NOTE: pager does not work on windows
+-[target.'cfg(not(windows))'.dependencies]
++[target.'cfg(not(any(windows, target_arch = "wasm32")))'.dependencies]
+ pager = "0.16.1"
++
++[target.'cfg(not(target_arch = "wasm32"))'.dependencies]
++ctrlc = "3.4.4"
+diff --git a/src/cmd/help.rs b/src/cmd/help.rs
+index 93f56bc..4630689 100644
+--- a/src/cmd/help.rs
++++ b/src/cmd/help.rs
+@@ -821,14 +821,14 @@ impl Args {
+             return Ok(());
+         }
+ 
+-        #[cfg(not(windows))]
++        #[cfg(not(any(windows, target_arch = "wasm32")))]
+         {
+             colored::control::set_override(true);
+             pager::Pager::with_pager("less -SRi").setup();
+             Ok(())
+         }
+ 
+-        #[cfg(windows)]
++        #[cfg(any(windows, target_arch = "wasm32"))]
+         {
+             Err("The -p/--pager flag does not work on windows, sorry :'(".to_string())?
+         }
+diff --git a/src/cmd/progress.rs b/src/cmd/progress.rs
+index 45f90f6..27942fc 100644
+--- a/src/cmd/progress.rs
++++ b/src/cmd/progress.rs
+@@ -86,6 +86,7 @@ impl EnhancedProgressBar {
+         // NOTE: dealing with voluntary interruptions
+         let handle = enhanced_bar.clone();
+ 
++        #[cfg(not(target_arch = "wasm32"))]
+         ctrlc::set_handler(move || {
+             handle.interrupt();
+             std::process::exit(1);
+diff --git a/src/cmd/view.rs b/src/cmd/view.rs
+index be621c0..1cd3c20 100644
+--- a/src/cmd/view.rs
++++ b/src/cmd/view.rs
+@@ -551,12 +551,12 @@ pub fn run(argv: &[&str]) -> CliResult<()> {
+     // NOTE: we setup the pager when everything has been read and process and no error
+     // occurred along the way, so that we don't get to read a paged error
+     if args.flag_pager {
+-        #[cfg(not(windows))]
++        #[cfg(not(any(windows, target_arch = "wasm32")))]
+         {
+             pager::Pager::with_pager("less -SR").setup();
+         }
+ 
+-        #[cfg(windows)]
++        #[cfg(any(windows, target_arch = "wasm32"))]
+         {
+             Err("The -p/--pager flag does not work on windows, sorry :'(".to_string())?;
+         }

@@ -1,0 +1,19 @@
+{
+  "name": "xan-wasm",
+  "version": "0.1.0",
+  "description": "xan CLI compiled to WASM",
+  "type": "module",
+  "main": "xan.js",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jsscheller/xan-wasm.git"
+  },
+  "license": "MIT",
+  "devDependencies": {
+    "esbuild": "^0.21.2",
+    "runish": "^0.1.0",
+    "serdev": "^0.1.0",
+    "typescript": "^5.3.3",
+    "uvu": "^0.5.6"
+  }
+}
