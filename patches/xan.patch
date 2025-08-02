@@ -72,3 +72,28 @@ index be621c0..1cd3c20 100644
          {
              Err("The -p/--pager flag does not work on windows, sorry :'(".to_string())?;
          }
+diff --git a/src/read.rs b/src/read.rs
+index 9ed7b95..6385bb3 100644
+--- a/src/read.rs
++++ b/src/read.rs
+@@ -422,13 +422,13 @@ where
+     }
+ 
+     // Limiting number of chunks when file is too short
+-    options.chunks = options
+-        .chunks
+-        .min(
+-            (sample.file_len / (sample.max_record_size * options.jump_sample_size))
+-                .saturating_sub(1) as usize,
+-        )
+-        .max(1);
++    // options.chunks = options
++    //     .chunks
++    //     .min(
++    //         (sample.file_len / (sample.max_record_size * options.jump_sample_size))
++    //             .saturating_sub(1) as usize,
++    //     )
++    //     .max(1);
+ 
+     // TODO: it might become important to remove the pre-csv header from
+     // the offset segmentation.

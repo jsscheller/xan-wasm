@@ -10,7 +10,13 @@ const OUT_DIR = path.resolve("./out");
 async function main() {
   await fs.mkdir(OUT_DIR, { recursive: true });
 
-  await run("patch", ["-p1", "-i", "patches/xan.patch"]);
+  await run(
+    "patch",
+    ["-p1", "--forward", "--silent", "-i", "../../patches/xan.patch"],
+    {
+      cwd: path.join(LIB_DIR, "xan"),
+    },
+  );
 
   const emccArgs = [
     "-lworkerfs.js",

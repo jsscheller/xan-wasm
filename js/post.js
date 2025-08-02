@@ -5,6 +5,7 @@ Object.assign(FS, {
   ["chdir"]: FS.chdir,
   ["writeFile"]: FS.writeFile,
   ["readFile"]: FS.readFile,
+  ["readdir"]: FS.readdir,
   ["createLazyFile"]: FS.createLazyFile,
   ["setIgnorePermissions"]: function (val) {
     FS.ignorePermissions = val;
